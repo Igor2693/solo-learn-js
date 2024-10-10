@@ -16,3 +16,6 @@ console.log('Стоимость верстки экранов ' + screenPrice + 
 console.log(Array(screens.toLowerCase()))
 
 console.log('Процент отката посреднику за работу ' + fullPrice * (rollback / 100))
+
+console.log(Number.isSafeInteger(fullPrice))
+console.log(Number.isSafeInteger(Infinity))
