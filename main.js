@@ -11,6 +11,13 @@ const fullPrice = screenPrice + servicePrice1 + servicePrice2
 const servicePercentPrice = fullPrice * rollback / 100
 console.log(Math.ceil(servicePercentPrice))
 
+
+const getAllServicePrices = function(price1, price2) {
+    return price1 + price2
+}
+const allServicePrices = getAllServicePrices(servicePrice1, servicePrice2)
+console.log(allServicePrices)
+
 if (fullPrice >= 30000) {
     console.log('Даем скидку в 10%')
 } if (30000 > fullPrice && fullPrice >= 15000) {
