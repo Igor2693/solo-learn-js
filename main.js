@@ -21,7 +21,7 @@ const fullTotalCount = document.getElementsByClassName('total-input')[3]
 const totalCountRollback = document.getElementsByClassName('total-input')[4]
 
 let screens = document.querySelectorAll('.screen')
-console.log(screens);
+console.dir(screens);
 
 
 const appData = {
@@ -32,38 +32,37 @@ const appData = {
     titleProject: '',
     screens: [],
     adaptive: true,
+    isError: false,
     fullPrice: 0,
     servicePricesPercent: 0,
     servicePricesNumber: 0,
     servicePercentPrice: 0,
     init: function () {
         appData.addTitle()
-        if (appData.screens[name] = 'Тип экранов') {
-            startBtn.addEventListener('click', appData.start)
-        } else (startBtn.disable = true)
-
-
+        startBtn.addEventListener('click', appData.start)
         buttonPlus.addEventListener('click', appData.addInput)
     },
     addTitle: function () {
         const titleText = title.textContent
         document.title = titleText
-        console.log(titleText)
     },
     start: function () {
-        appData.addScreens()
-        appData.addServices()
+        if (!appData.isError) {
+            appData.addScreens()
+            appData.addServices()
 
-        appData.addPrices()
-        // appData.getServicePercentPrices()
+            appData.addPrices()
+            // appData.getServicePercentPrices()
 
-        // appData.logger()
-        console.log(appData)
-        appData.showResult()
+            // appData.logger()
+            console.log(appData)
+            appData.showResult()
+        }
+
     },
     showResult: function () {
         total.value = appData.screenPrice
-        totalCount.value = appData.select
+        totalCount.value = appData.screens.screenNum
         totalCountOther.value = appData.servicePricesNumber
         fullTotalCount.value = appData.servicePricesNumber + appData.screenPrice
         totalCountRollback.value = appData.fullPrice
@@ -72,6 +71,7 @@ const appData = {
 
     },
     addScreens: function () {
+        appData.isError = false;
         screens = document.querySelectorAll('.screen')
         screens.forEach(function (screen, index) {
             const select = screen.querySelector('select')
@@ -81,8 +81,16 @@ const appData = {
             appData.screens.push({
                 id: index,
                 name: selectName,
-                price: +select.value * +input.value
+                price: +select.value * +input.value,
+                screenNum: input.value
             })
+
+            for (let i = 0; i < screens.length; i++) {
+
+                if (select.value === '' || input.value === '') {
+                    appData.isError = true
+                }
+            }
 
         })
         console.log(appData.screens)
