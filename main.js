@@ -11,8 +11,11 @@ const otherItemsPercent = document.querySelectorAll('.other-items.percent')
 const otherItemsNumber = document.querySelectorAll('.other-items.number')
 
 const inputRange = document.querySelector('.rollback input[type=range]')
+console.log(inputRange);
+
 
 const inputRangeValue = document.querySelector('.rollback .range-value')
+console.log(inputRangeValue);
 
 const total = document.getElementsByClassName('total-input')[0]
 const totalCount = document.getElementsByClassName('total-input')[1]
@@ -25,7 +28,7 @@ console.dir(screens);
 
 
 const appData = {
-    rollback: 10,
+    rollback: 0,
     screenPrice: 0,
     servicesPercent: {},
     servicesNumber: {},
@@ -34,6 +37,8 @@ const appData = {
     adaptive: true,
     isError: false,
     fullPrice: 0,
+    countInput: 0,
+    fullPriceRoll: 0,
     servicePricesPercent: 0,
     servicePricesNumber: 0,
     servicePercentPrice: 0,
@@ -41,6 +46,8 @@ const appData = {
         appData.addTitle()
         startBtn.addEventListener('click', appData.start)
         buttonPlus.addEventListener('click', appData.addInput)
+        inputRange.addEventListener('input', appData.rollBackForm)
+        inputRange.addEventListener('change', appData.rollBackForm)
     },
     addTitle: function () {
         const titleText = title.textContent
@@ -62,10 +69,12 @@ const appData = {
     },
     showResult: function () {
         total.value = appData.screenPrice
-        totalCount.value = appData.screens.screenNum
+        totalCount.value = appData.countInput
         totalCountOther.value = appData.servicePricesNumber
         fullTotalCount.value = appData.servicePricesNumber + appData.screenPrice
-        totalCountRollback.value = appData.fullPrice
+        totalCountRollback.value = appData.fullPriceRoll
+
+        
 
 
 
@@ -82,8 +91,10 @@ const appData = {
                 id: index,
                 name: selectName,
                 price: +select.value * +input.value,
-                screenNum: input.value
+                screenNum: input.value,
+                count: +input.value
             })
+
 
             for (let i = 0; i < screens.length; i++) {
 
@@ -126,6 +137,7 @@ const appData = {
     addPrices: function () {
         for (let screen of appData.screens) {
             appData.screenPrice += +screen.price
+            appData.countInput += screen.count
         }
 
         for (let key in appData.servicesPercent) {
@@ -133,23 +145,21 @@ const appData = {
         }
         for (let key in appData.servicesNumber) {
             appData.servicePricesNumber += appData.servicesNumber[key]
-        }
+        } 
+        
         appData.fullPrice = +appData.servicePricesPercent + appData.servicePricesNumber + appData.screenPrice
+        appData.servicePercentPrice = appData.fullPrice - (appData.fullPrice * (appData.rollback / 100))
+        appData.fullPriceRoll = appData.fullPrice + appData.servicePercentPrice       
+
     },
     getServicePercentPrices: function () {
         appData.servicePercentPrice = appData.fullPrice - (appData.fullPrice * (appData.rollback / 100))
+        console.log();
+        
     },
-
-    getRollbackMessage: function () {
-        if (appData.fullPrice >= 30000) {
-            return 'Даем скидку в 10%'
-        } else if (30000 >= appData.fullPrice && appData.fullPrice > 15000) {
-            return 'Даем скидку в 5%'
-        } else if (15000 >= appData.fullPrice && appData.fullPrice >= 0) {
-            return 'Скидка не предусмотрена'
-        } else {
-            return 'Что то пошло не так'
-        }
+    rollBackForm: function(event) {
+        inputRangeValue.textContent = event.target.value
+        appData.rollback = +inputRangeValue.textContent
     },
 
     logger: function () {
