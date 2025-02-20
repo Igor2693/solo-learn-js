@@ -10,6 +10,9 @@ const buttonPlus = document.querySelector('.screen-btn')
 const otherItemsPercent = document.querySelectorAll('.other-items.percent')
 const otherItemsNumber = document.querySelectorAll('.other-items.number')
 
+const allItems = document.querySelectorAll('.other-items')
+
+
 const inputRange = document.querySelector('.rollback input[type=range]')
 const inputRangeValue = document.querySelector('.rollback .range-value')
 
@@ -20,6 +23,10 @@ const fullTotalCount = document.getElementsByClassName('total-input')[3]
 const totalCountRollback = document.getElementsByClassName('total-input')[4]
 
 let blockScreens = document.querySelectorAll('.screen')
+
+const allInput = document.querySelectorAll('input[type=text]')
+
+
 
 const appData = {
     rollback: 0,
@@ -38,11 +45,11 @@ const appData = {
     rollbackPrice: 0,
     init: function () {
         document.title = title.textContent
-        startBtn.addEventListener('click', appData.start)
+        startBtn.addEventListener('click', this.start)
         buttonPlus.addEventListener('click', appData.addScreenBlock)
         inputRange.addEventListener('input', appData.addRange)
         inputRange.addEventListener('change', appData.addRange)
-
+        resetBtn.addEventListener('click', appData.reset)
     },
     start: function () {
         appData.checkError()
@@ -53,11 +60,35 @@ const appData = {
             appData.getFullPrice();
             appData.getPriceRollback()
             appData.showResult()
+            appData.disable()
 
             appData.logger()
         } else {
             console.log('ошибка');
         }
+    },
+    reset: function () {
+        blockScreens.forEach(function (item) {
+            const select = item.querySelector('select')
+            const input = item.querySelector('[type=text]')
+            input.disabled = false
+            select.disabled = false
+        })
+        allItems.forEach(function (item) {
+            const check = item.querySelector('[type=checkbox]')
+            check.disabled = false
+        })
+        buttonPlus.disabled = false
+        startBtn.style.display = 'block'
+        resetBtn.style.display = 'none'
+
+        const rightInput = document.querySelectorAll('.total-input')
+        rightInput.forEach(function (item) {
+            item.value = 0
+        })
+
+
+
     },
     showResult: function () {
         total.value = appData.screenPrice
@@ -146,6 +177,23 @@ const appData = {
                 }
             }
         })
+    },
+    disable: function () {
+        blockScreens.forEach(function (item) {
+            const select = item.querySelector('select')
+            const input = item.querySelector('[type=text]')
+            input.disabled = true
+            select.disabled = true
+        })
+        allItems.forEach(function (item) {
+            const check = item.querySelector('[type=checkbox]')
+            check.disabled = true
+        })
+        buttonPlus.disabled = true
+        startBtn.style.display = 'none'
+        resetBtn.style.display = 'block'
+
+
     },
     logger: function () {
         console.log(appData);
